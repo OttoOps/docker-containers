@@ -1,0 +1,1 @@
+Dockerfile for [Nginx](http://nginx.org/).
