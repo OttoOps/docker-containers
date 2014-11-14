@@ -1,0 +1,1 @@
+*/1 * * * * echo "echo 'crontab ran<br />';" >> /var/log/docker-cleanup.log
