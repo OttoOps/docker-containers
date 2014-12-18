@@ -23,9 +23,12 @@ RUN \
     apt-get update -qq && \
     apt-get install -qqy lxc-docker
 
+ADD docker-cleanup.sh /docker-cleanup.sh
+ENV CLEANUP_FREQ 59
+
 # Clean up APT when done.
 RUN \
-    (crontab -u root -l; echo "*/1 * * * * docker ps >> /var/log/docker-cleanup.log" ) | crontab -u root - && \
+    (crontab -u root -l; echo "*/1 * * * * /docker-cleanup.sh" ) | crontab -u root - && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

@@ -1,1 +1,3 @@
-*/1 * * * * echo "echo 'crontab ran<br />';" >> /var/log/docker-cleanup.log
+#! /bin/bash
+
+docker rm $(docker ps -aq)
