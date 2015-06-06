@@ -1,16 +1,8 @@
-FROM phusion/baseimage:0.9.15
+FROM ubuntu:14.04
 MAINTAINER Paul Otto <paul@ottoops.com>
 
-# Set correct environment variables.
-ENV HOME /root
-
-# Prevent base image from generating SSH keys
-RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
-
-# ...put your own build instructions here...
-#ADD docker-cleanup.sh /etc/cron.d/docker-cleanup
-
-RUN apt-get update -qq && apt-get install -qqy \
+RUN \
+  env DEBIAN_FRONTEND=noninteractive apt-get update -qqy && apt-get install -qqy \
     apt-transport-https \
     ca-certificates \
     lxc \
@@ -24,15 +16,7 @@ RUN \
     apt-get install -qqy lxc-docker
 
 ADD docker-cleanup.sh /docker-cleanup.sh
-ENV CLEANUP_FREQ 59
-
-# Clean up APT when done.
-RUN \
-    (crontab -u root -l; echo "*/1 * * * * /docker-cleanup.sh" ) | crontab -u root - && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 VOLUME /var/lib/docker
 
-# Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
+CMD ["/docker-cleanup.sh"]
